@@ -29,11 +29,11 @@ let python_highlight_all=1
 syntax on
 
 " autocomplete
-Plugin 'Valloric/YouCompleteMe'
-let g:ycm_confirm_extra_conf = 0
-let g:ycm_python_binary_path = 'python'
-let g:ycm_show_diagnostics_ui = 0
-let g:ycm_autoclose_preview_window_after_insertion = 1
+" Plugin 'Valloric/YouCompleteMe'
+" let g:ycm_confirm_extra_conf = 0
+" let g:ycm_python_binary_path = 'python'
+" let g:ycm_show_diagnostics_ui = 0
+" let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " file manager
 Plugin 'scrooloose/nerdtree'
@@ -65,8 +65,8 @@ nnoremap <C-e> :Eval<CR>
 nnoremap E :%Eval<CR>
 
 " javascript and react
-" Plugin 'pangloss/vim-javascript'
-" Plugin 'mxw/vim-jsx'
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -101,97 +101,122 @@ filetype plugin indent on    " required
 syntax enable
 colorscheme monokai
 set encoding=utf-8
+
 " Sets how many lines of history VIM has to remember
 set history=500
+
 " Set to auto read when a file is changed from the outside
 set autoread
+
 "Always show current position
 set ruler
+
 " Height of the command bar
 set cmdheight=2
+
 " Configure backspace so it acts as it should act
 set backspace=eol,start,indent
 set whichwrap+=<,>,h,l
+
 " Ignore case when searching
 set ignorecase
+
 " When searching try to be smart about cases
 set smartcase
+
 " Highlight search results
 set hlsearch
+
 " Makes search act like search in modern browsers
 set incsearch
+
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
+
 " For regular expressions turn magic on ???
 set magic
+
 " Show matching brackets when text indicator is over them
 set showmatch
+
 " How many tenths of a second to blink when matching brackets
 set mat=2
+
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
 set t_vb=
 set tm=500
+
 " show line numbers
 set number
 set relativenumber " show relative line numbers"
+
 " show a visual line under the cursor's current line
 set cursorline
+
 " show the matching part of the pair for [] {} and ()
 set showmatch
-" Use spaces instead of tabs
-set expandtab
-" Be smart when using tabs ;)
+
+" Be smart when using tabs ???
 set smarttab
-" 1 tab == 4 spaces
-set shiftwidth=4
-set tabstop=4
+
 " Linebreak on 500 characters
-set lbr
-set tw=500
+set tw=120
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
+
 " With a map leader it's possible to do extra key combinations
-" like <leader>w saves the current file
 let mapleader = "\\"
 let g:mapleader = "\\"
+
 " Smart way to move between windows
 nnoremap <C-j> <C-W>j
 nnoremap <C-k> <C-W>k
 nnoremap <C-h> <C-W>h
 nnoremap <C-l> <C-W>l
+
 " Always show the status line
 set laststatus=2
+
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
+
 " highlight extra whitespace
 :highlight ExtraWhitespace ctermbg=red guibg=red
 :match ExtraWhitespace /\s\+$/
+
 " short message for some situations
 set shortmess+=c
+
 " use system clipboard
 set clipboard=unnamed
+
 " toggle paste mode
 set pastetoggle=<leader>p
+
 " better split positions
 set splitbelow
 set splitright
-" Enable folding
+
+" enable folding
 set foldmethod=indent
 set foldlevel=60
-" Enable folding with the spacebar
+" enable folding with the spacebar
 nnoremap <space> za
-" Python and web full-stack indentations
+
+" python and web full-stack indentations
 au BufNewFile,BufRead *.py
             \ set tabstop=4 |
             \ set softtabstop=4 |
             \ set shiftwidth=4 |
-            \ set textwidth=79 |
+            \ set textwidth=120 |
+            \ set colorcolumn=120 |
             \ set expandtab |
             \ set autoindent |
             \ set fileformat=unix
+
 au BufNewFile,BufRead *.js,*.html,*.css
             \ set tabstop=2 |
             \ set softtabstop=2 |
@@ -203,8 +228,8 @@ au BufNewFile,BufRead *.js,*.html,*.css
 " Disable highlight when <leader><cr> is pressed
 map <silent> <leader><cr> :noh<cr>
 " Insert ipdb breakpoint
-map <silent> <leader>b oimport ipdb; ipdb.set_trace()<esc>
-map <silent> <leader>B Oimport ipdb; ipdb.set_trace()<esc>
+map <silent> <leader>b Oimport ipdb; ipdb.set_trace()<esc>
+map <silent> <leader>B oimport ipdb; ipdb.set_trace()<esc>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Helper functions
@@ -217,24 +242,7 @@ function! HasPaste()
     return ''
 endfunction
 
-"""""""""""""""""""""""
-" => python-mode | rope
-"""""""""""""""""""""""
-" let g:pymode_rope = 0
-" let g:pymode_rope_lookup_project = 0
-" let g:pymode_rope_complete_on_dot = 0
-" let g:pymode_rope_autoimport = 0
-" set nofoldenable
-" autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-"""""""""""""""""""""""
-" => ctrlp.vim
-"""""""""""""""""""""""
-" let g:ctrlp_map = '<c-p>'
-" let g:ctrlp_cmd = 'CtrlP'
-" " 'r' - the nearest ancestor that contains one of these directories or files: .git .hg .svn .bzr _darcs
-" " 'a' - like c, but only if the current working directory outside of CtrlP is not a direct ancestor of the directory of the current file.
-" let g:ctrlp_working_path_mode = 'ra'
-" " Then a simple:
-" " $ touch .ctrlp
-" " Will mean CtrlP will now root itself within that directory rather than continuing up the stack to find your .git directory.
-" let g:ctrlp_root_markers = ['.ctrlp']
+let g:ycm_autoclose_preview_window_after_insertion=1
+
+nnoremap <silent> <leader>l :set nonumber \| set norelativenumber<cr>
+nnoremap <silent> <leader>L :set number \| set relativenumber<cr>
