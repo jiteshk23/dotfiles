@@ -22,9 +22,33 @@ Plugin 'jiangmiao/auto-pairs'
 Plugin 'tmhedberg/SimpylFold'
 let g:SimpylFold_docstring_preview=1
 
-" syntax / PEP8 check on save
-Plugin 'scrooloose/syntastic'
-Plugin 'nvie/vim-flake8'
+" syntax check using syntastic
+Plugin 'vim-syntastic/syntastic'
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_check_on_w = 0
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_mode_map={'mode': 'passive'}
+" run syntastic
+nnoremap <silent> rr :SyntasticCheck<CR>
+" reset syntastic
+nnoremap <silent> <C-r> :SyntasticReset<CR>
+" toggle errors window
+nnoremap <silent> <C-e> :<C-u>call ToggleErrors()<CR>
+function! ToggleErrors()
+    let old_last_winnr = winnr('$')
+    lclose
+    if old_last_winnr == winnr('$')
+        " Nothing was closed, open syntastic error location panel
+        Errors
+    endif
+endfunction
+
 let python_highlight_all=1
 syntax on
 
@@ -241,8 +265,6 @@ function! HasPaste()
     endif
     return ''
 endfunction
-
-let g:ycm_autoclose_preview_window_after_insertion=1
 
 nnoremap <silent> <leader>l :set nonumber \| set norelativenumber<cr>
 nnoremap <silent> <leader>L :set number \| set relativenumber<cr>
