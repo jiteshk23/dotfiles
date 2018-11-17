@@ -31,12 +31,15 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_error_symbol = "✗"
 let g:syntastic_mode_map={'mode': 'passive'}
+let g:syntastic_python_checkers = ["flake8"]
+let g:syntastic_python_flake8_args='--ignore=E501,E266,E722,E126,E131,E221,E241,E201,E202,E402'
+let g:syntastic_cpp_check_header = 1
 " run syntastic
 nnoremap <silent> rr :SyntasticCheck<CR>
 " reset syntastic
-nnoremap <silent> <C-r> :SyntasticReset<CR>
+nnoremap <silent> RR :SyntasticReset<CR>
 " toggle errors window
-nnoremap <silent> <C-e> :<C-u>call ToggleErrors()<CR>
+nnoremap <silent> xr :<C-u>call ToggleErrors()<CR>
 function! ToggleErrors()
     let old_last_winnr = winnr('$')
     lclose
@@ -51,10 +54,10 @@ syntax on
 
 " autocomplete
 " Plugin 'Valloric/YouCompleteMe'
-" let g:ycm_confirm_extra_conf = 0
-" let g:ycm_python_binary_path = 'python'
-" let g:ycm_show_diagnostics_ui = 0
-" let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_confirm_extra_conf = 0
+let g:ycm_python_binary_path = 'python'
+let g:ycm_show_diagnostics_ui = 0
+let g:ycm_autoclose_preview_window_after_insertion = 1
 
 " file manager
 Plugin 'scrooloose/nerdtree'
@@ -72,7 +75,7 @@ let NERDTreeMinimalUI = 1
 let NERDTreeIgnore=['\.pyc$', '\~$'] " ignore files in NERDTree
 nnoremap <silent> <Leader>v :NERDTreeFind<CR>
 
-" Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " Plugin 'tpope/vim-unimpaired'
 " Plugin 'tpope/vim-surround'
 " Plugin 'python-mode/python-mode'
@@ -120,6 +123,7 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 
 syntax enable
+set t_Co=256
 colorscheme monokai
 set encoding=utf-8
 
@@ -179,15 +183,6 @@ set cursorline
 " show the matching part of the pair for [] {} and ()
 set showmatch
 
-" Be smart when using tabs ???
-set smarttab
-
-" Linebreak on 500 characters
-set tw=120
-set ai "Auto indent
-set si "Smart indent
-set wrap "Wrap lines
-
 " With a map leader it's possible to do extra key combinations
 let mapleader = "\\"
 let g:mapleader = "\\"
@@ -200,6 +195,7 @@ nnoremap <C-l> <C-W>l
 
 " Always show the status line
 set laststatus=2
+set cmdheight=1
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
@@ -228,20 +224,23 @@ set foldlevel=60
 nnoremap <space> za
 
 " python and web full-stack indentations
-au BufNewFile,BufRead *.py
+au BufNewFile,BufRead *.py,*.json
             \ set tabstop=4 |
             \ set softtabstop=4 |
             \ set shiftwidth=4 |
             \ set textwidth=120 |
             \ set colorcolumn=120 |
             \ set expandtab |
+            \ set smarttab |
             \ set autoindent |
             \ set fileformat=unix
 
-au BufNewFile,BufRead *.js,*.html,*.css
+au BufNewFile,BufRead *.js,*.html,*.css,*.cpp,*.h
             \ set tabstop=2 |
             \ set softtabstop=2 |
-            \ set shiftwidth=2
+            \ set shiftwidth=2 |
+            \ set expandtab |
+            \ set smarttab
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Leader commands
@@ -265,3 +264,5 @@ endfunction
 
 nnoremap <silent> <leader>l :set nonumber \| set norelativenumber<cr>
 nnoremap <silent> <leader>L :set number \| set relativenumber<cr>
+
+set tags=~/mytags
