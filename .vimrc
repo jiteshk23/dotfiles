@@ -18,9 +18,25 @@ Plugin 'airblade/vim-gitgutter'
 " insert or delete brackets, parens, quotes in pair
 Plugin 'jiangmiao/auto-pairs'
 
+
+Plugin 'rhysd/vim-clang-format'
+let g:clang_format#style_options = {
+            \ "AccessModifierOffset" : -4,
+            \ "AllowShortIfStatementsOnASingleLine" : "true",
+            \ "AlwaysBreakTemplateDeclarations" : "true",
+            \ "Standard" : "C++11"}
+" map to <Leader>cf in C++ code
+autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
+autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
+Plugin 'octol/vim-cpp-enhanced-highlight'
+let g:cpp_member_variable_highlight = 1
+let g:cpp_class_decl_highlight = 1
+
+
 " code folding
 Plugin 'tmhedberg/SimpylFold'
 let g:SimpylFold_docstring_preview=1
+
 
 " syntax check using syntastic
 Plugin 'vim-syntastic/syntastic'
@@ -31,9 +47,9 @@ let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_error_symbol = "✗"
 let g:syntastic_mode_map={'mode': 'passive'}
+" python settings
 let g:syntastic_python_checkers = ["flake8"]
-let g:syntastic_python_flake8_args='--ignore=E501,E266,E722,E126,E131,E221,E241,E201,E202,E402'
-let g:syntastic_cpp_check_header = 1
+let g:syntastic_python_flake8_args='--ignore=E501,E266,E722,E126,E131,E221,E241,E201,E202,E402,F841'
 " run syntastic
 nnoremap <silent> rr :SyntasticCheck<CR>
 " reset syntastic
@@ -52,12 +68,14 @@ endfunction
 let python_highlight_all=1
 syntax on
 
+
 " autocomplete
-" Plugin 'Valloric/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
 let g:ycm_confirm_extra_conf = 0
 let g:ycm_python_binary_path = 'python'
 let g:ycm_show_diagnostics_ui = 0
 let g:ycm_autoclose_preview_window_after_insertion = 1
+
 
 " file manager
 Plugin 'scrooloose/nerdtree'
@@ -75,22 +93,22 @@ let NERDTreeMinimalUI = 1
 let NERDTreeIgnore=['\.pyc$', '\~$'] " ignore files in NERDTree
 nnoremap <silent> <Leader>v :NERDTreeFind<CR>
 
-Plugin 'tpope/vim-fugitive'
-" Plugin 'tpope/vim-unimpaired'
-" Plugin 'tpope/vim-surround'
-" Plugin 'python-mode/python-mode'
-" Plugin 'kien/ctrlp.vim'
 
-" clojure
-Plugin 'guns/vim-clojure-static'
-Plugin 'tpope/vim-fireplace'
-let g:clojure_align_multiline_strings = 1
-nnoremap <C-e> :Eval<CR>
-nnoremap E :%Eval<CR>
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-surround'
+" Plugin 'python-mode/python-mode'
+
+
+Plugin 'kien/ctrlp.vim'
+let g:ctrlp_root_markers = ['.ctrlp']
+let g:ctrlp_custom_ignore = 'node_modules\|git'
+
 
 " javascript and react
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
+
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -173,10 +191,6 @@ set novisualbell
 set t_vb=
 set tm=500
 
-" show line numbers
-set number
-set relativenumber " show relative line numbers"
-
 " show a visual line under the cursor's current line
 set cursorline
 
@@ -196,6 +210,14 @@ nnoremap <C-l> <C-W>l
 " Always show the status line
 set laststatus=2
 set cmdheight=1
+
+" Returns true if paste mode is enabled
+function! HasPaste()
+    if &paste
+        return 'PASTE MODE  '
+    endif
+    return ''
+endfunction
 
 " Format the status line
 set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l\ \ Column:\ %c
@@ -224,7 +246,7 @@ set foldlevel=60
 nnoremap <space> za
 
 " python and web full-stack indentations
-au BufNewFile,BufRead *.py,*.json
+au BufNewFile,BufRead *.py
             \ set tabstop=4 |
             \ set softtabstop=4 |
             \ set shiftwidth=4 |
@@ -235,12 +257,15 @@ au BufNewFile,BufRead *.py,*.json
             \ set autoindent |
             \ set fileformat=unix
 
-au BufNewFile,BufRead *.js,*.html,*.css,*.cpp,*.h
+au BufNewFile,BufRead *.js,*.html,*.css,*.cpp,*.h,*rc,*.sh,*.json
             \ set tabstop=2 |
             \ set softtabstop=2 |
             \ set shiftwidth=2 |
             \ set expandtab |
-            \ set smarttab
+            \ set smarttab |
+            \ set autoindent |
+            \ set fileformat=unix
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Leader commands
@@ -251,18 +276,36 @@ map <silent> <leader><cr> :noh<cr>
 map <silent> <leader>b Oimport ipdb; ipdb.set_trace()<esc>
 map <silent> <leader>B oimport ipdb; ipdb.set_trace()<esc>
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Helper functions
+" => Line numbers: settings and commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Returns true if paste mode is enabled
-function! HasPaste()
-    if &paste
-        return 'PASTE MODE  '
+" show line numbers
+set number
+" show relative line numbers
+set relativenumber
+function! ToggleRelativeNumber()
+    if &number == 0
+      return
     endif
-    return ''
+    let &relativenumber = &relativenumber?0:1
+    let g:my_relative_number = &relativenumber
 endfunction
+function! ToggleNumber()
+    let &number = &number? 0:1
+    if &number == 1
+      let &relativenumber = get(g:, 'my_relative_number', 1)
+      GitGutterSignsEnable
+    elseif &number == 0
+      let &relativenumber = 0
+      GitGutterSignsDisable
+    endif
+endfunction
+nnoremap <silent> <Leader>l :call ToggleNumber()<cr>
+nnoremap <silent> <Leader>r :call ToggleRelativeNumber()<cr>
 
-nnoremap <silent> <leader>l :set nonumber \| set norelativenumber<cr>
-nnoremap <silent> <leader>L :set number \| set relativenumber<cr>
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Tags for searching usage in codebase i.e. ~/dev
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 set tags=~/mytags
